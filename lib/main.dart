@@ -255,17 +255,13 @@ class _CadastroPageState extends State<CadastroPage> {
                     hintText: 'Digite e salve (você pode cadastrar várias vezes).',
                     border: OutlineInputBorder(),
                   ),
-                  minLines: 3,
-                  maxLines: null,
                   validator: (v) {
                     if (v == null || v.trim().isEmpty) return 'Informe um texto.';
                     return null;
                   },
                 ),
               ),
-              const SizedBox(height: 12),
               SizedBox(
-                width: double.infinity,
                 child: ElevatedButton.icon(
                   icon: const Icon(Icons.save),
                   label: const Text('Salvar'),
