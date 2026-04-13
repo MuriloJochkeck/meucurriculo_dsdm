@@ -54,6 +54,14 @@ class AppState extends ChangeNotifier {
     lista.insert(0, v);
     notifyListeners();
   }
+
+  void removerAt(TipoCadastro tipo, int index) {
+    final lista = _itens[tipo];
+    if (lista == null) return;
+    if (index < 0 || index >= lista.length) return;
+    lista.removeAt(index);
+    notifyListeners();
+  }
 }
 
 class AppStateScope extends InheritedNotifier<AppState> {
@@ -74,19 +82,19 @@ class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
   @override
-  State<MyApp> createState() => _MyAppState();
+  State<MyApp> createState() => MyAppState();
 }
 
-class _MyAppState extends State<MyApp> {
-  final AppState _state = AppState();
+class MyAppState extends State<MyApp> {
+  final AppState state = AppState();
 
   @override
   Widget build(BuildContext context) {
     return AppStateScope(
-      notifier: _state,
+      notifier: state,
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: const PaginaInicial(),
+        home: PaginaInicial(),
       ),
     );
   }
@@ -99,13 +107,13 @@ class PaginaInicial extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Meu Currículo'),
+        title: Text('Meu Currículo'),
         actions: [
           IconButton(
             tooltip: 'Adicionar cadastro',
-            icon: const Icon(Icons.add),
+            icon: Icon(Icons.add),
             onPressed: () async {
-              await Navigator.of(context).push(
+              Navigator.of(context).push(
                 MaterialPageRoute(builder: (_) => const CadastroPage()),
               );
             },
@@ -115,7 +123,7 @@ class PaginaInicial extends StatelessWidget {
       ),
 
       body: ListView(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(16),
         children: [
           // Avatar
           Center(
@@ -133,8 +141,8 @@ class PaginaInicial extends StatelessWidget {
           // Breve descrição (fica na página inicial)
           Card(
             child: ListTile(
-              title: const Text('Murilo Victor Jochkeck'),
-              subtitle: const Text(
+              title: Text('Murilo Victor Jochkeck'),
+              subtitle: Text(
                 'Eu sou o Murilo, tenho 17 anos e atualmente estou cursando o ensino médio técnico em informática para internet no IFC - Concórdia',
               ),
             ),
@@ -143,9 +151,9 @@ class PaginaInicial extends StatelessWidget {
           // Escolaridade
           Card(
             child: ListTile(
-              leading: const Icon(Icons.school),
-              title: const Text('Escolaridade'),
-              trailing: const Icon(Icons.chevron_right),
+              leading: Icon(Icons.school),
+              title: Text('Escolaridade'),
+              trailing: Icon(Icons.chevron_right),
               onTap: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
@@ -159,9 +167,9 @@ class PaginaInicial extends StatelessWidget {
           // Projetos
           Card(
             child: ListTile(
-              leading: const Icon(Icons.code),
-              title: const Text('Projetos'),
-              trailing: const Icon(Icons.chevron_right),
+              leading: Icon(Icons.code),
+              title: Text('Projetos'),
+              trailing: Icon(Icons.chevron_right),
               onTap: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
@@ -175,9 +183,9 @@ class PaginaInicial extends StatelessWidget {
           // Recomendações
           Card(
             child: ListTile(
-              leading: const Icon(Icons.star),
-              title: const Text('Recomendações'),
-              trailing: const Icon(Icons.chevron_right),
+              leading: Icon(Icons.star),
+              title: Text('Recomendações'),
+              trailing: Icon(Icons.chevron_right),
               onTap: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
@@ -198,18 +206,18 @@ class CadastroPage extends StatefulWidget {
   const CadastroPage({super.key});
 
   @override
-  State<CadastroPage> createState() => _CadastroPageState();
+  State<CadastroPage> createState() => CadastroPageState();
 }
 
-class _CadastroPageState extends State<CadastroPage> {
-  final _formKey = GlobalKey<FormState>();
-  TipoCadastro _tipo = TipoCadastro.escolaridade;
+class CadastroPageState extends State<CadastroPage> {
+  final formKey = GlobalKey<FormState>();
+  TipoCadastro tipo = TipoCadastro.escolaridade;
 
-  final _textoCtrl = TextEditingController();
+  final textoCtrl = TextEditingController();
 
   @override
   void dispose() {
-    _textoCtrl.dispose();
+    textoCtrl.dispose();
     super.dispose();
   }
 
@@ -219,17 +227,17 @@ class _CadastroPageState extends State<CadastroPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Novo cadastro'),
+        title: Text('Novo cadastro'),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(16),
         child: Form(
-          key: _formKey,
+          key: formKey,
           child: Column(
             children: [
               DropdownButtonFormField<TipoCadastro>(
-                initialValue: _tipo,
-                decoration: const InputDecoration(
+                initialValue: tipo,
+                decoration: InputDecoration(
                   labelText: 'Tipo',
                   border: OutlineInputBorder(),
                 ),
@@ -243,14 +251,14 @@ class _CadastroPageState extends State<CadastroPage> {
                     .toList(growable: false),
                 onChanged: (v) {
                   if (v == null) return;
-                  setState(() => _tipo = v);
+                  setState(() => tipo = v);
                 },
               ),
-              const SizedBox(height: 12),
+              SizedBox(height: 12),
               Expanded(
                 child: TextFormField(
-                  controller: _textoCtrl,
-                  decoration: const InputDecoration(
+                  controller: textoCtrl,
+                  decoration: InputDecoration(
                     labelText: 'Texto',
                     hintText: 'Digite e salve (você pode cadastrar várias vezes).',
                     border: OutlineInputBorder(),
@@ -263,13 +271,13 @@ class _CadastroPageState extends State<CadastroPage> {
               ),
               SizedBox(
                 child: ElevatedButton.icon(
-                  icon: const Icon(Icons.save),
-                  label: const Text('Salvar'),
+                  icon: Icon(Icons.save),
+                  label: Text('Salvar'),
                   onPressed: () {
-                    final ok = _formKey.currentState?.validate() ?? false;
+                    final ok = formKey.currentState?.validate() ?? false;
                     if (!ok) return;
 
-                    state.adicionar(_tipo, _textoCtrl.text);
+                    state.adicionar(tipo, textoCtrl.text);
 
                     Navigator.of(context).pop();
                   },
@@ -306,14 +314,19 @@ class ListaCadastrosPage extends StatelessWidget {
               ),
             )
           : ListView.separated(
-              padding: const EdgeInsets.all(16),
+              padding: EdgeInsets.all(16),
               itemCount: itens.length,
-              separatorBuilder: (_, __) => const SizedBox(height: 8),
+              separatorBuilder: (_, __) => SizedBox(height: 8),
               itemBuilder: (context, index) {
-                return Card(
-                  child: ListTile(
-                    leading: Icon(_iconeTipo(tipo)),
-                    title: Text(itens[index]),
+                final item = itens[index];
+                return Dismissible(
+                  key: ValueKey('${tipo.name}-$item-$index'),
+                  onDismissed: (_) => state.removerAt(tipo, index),
+                  child: Card(
+                    child: ListTile(
+                      leading: Icon(_iconeTipo(tipo)),
+                      title: Text(item),
+                    ),
                   ),
                 );
               },
@@ -325,7 +338,7 @@ class ListaCadastrosPage extends StatelessWidget {
             MaterialPageRoute(builder: (_) => const CadastroPage()),
           );
         },
-        child: const Icon(Icons.add),
+        child: Icon(Icons.add),
       ),
     );
   }
