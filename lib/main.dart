@@ -23,7 +23,7 @@ IconData _iconeTipo(TipoCadastro tipo) {
 }
 
 class AppState extends ChangeNotifier {
-  final Map<TipoCadastro, List<String>> _itens = {
+  final Map<TipoCadastro, List<String>> itens = {
     // Dados iniciais para já ter conteúdo ao clicar nas seções.
     TipoCadastro.escolaridade: <String>[
       'IFC - Concórdia (2024 - atual)',
@@ -43,20 +43,20 @@ class AppState extends ChangeNotifier {
   };
 
   List<String> itensDoTipo(TipoCadastro tipo) =>
-      List.unmodifiable(_itens[tipo] ?? const <String>[]);
+      List.unmodifiable(itens[tipo] ?? const <String>[]);
 
-  int totalDoTipo(TipoCadastro tipo) => (_itens[tipo] ?? const <String>[]).length;
+  int totalDoTipo(TipoCadastro tipo) => (itens[tipo] ?? const <String>[]).length;
 
   void adicionar(TipoCadastro tipo, String texto) {
     final v = texto.trim();
     if (v.isEmpty) return;
-    final lista = _itens[tipo] ??= <String>[];
+    final lista = itens[tipo] ??= <String>[];
     lista.insert(0, v);
     notifyListeners();
   }
 
   void removerAt(TipoCadastro tipo, int index) {
-    final lista = _itens[tipo];
+    final lista = itens[tipo];
     if (lista == null) return;
     if (index < 0 || index >= lista.length) return;
     lista.removeAt(index);
